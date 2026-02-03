@@ -56,8 +56,61 @@ public class Mandy {
                     System.out.println(" Please provide a valid task number.");
                 }
                 System.out.println(separator);
+            } else if (input.startsWith("todo ")) {
+                String description = input.substring(5).trim();
+                if (description.isEmpty()) {
+                    System.out.println(" The description of a todo cannot be empty.");
+                } else {
+                    Todo todo = new Todo(description);
+                    tasks.add(todo);
+                    System.out.println(" Got it. I've added this task:");
+                    System.out.println("   " + todo);
+                    System.out.println(" Now you have " + tasks.size() + " tasks in the list.");
+                }
+                System.out.println(separator);
+            } else if (input.startsWith("deadline ")) {
+                String rest = input.substring(9).trim();
+                int byIndex = rest.indexOf("/by ");
+                if (byIndex == -1) {
+                    System.out.println(" Invalid deadline format. Use: deadline <description> /by <time>");
+                } else {
+                    String description = rest.substring(0, byIndex).trim();
+                    String by = rest.substring(byIndex + 4).trim();
+                    if (description.isEmpty() || by.isEmpty()) {
+                        System.out.println(" The description and by time cannot be empty.");
+                    } else {
+                        Deadline deadline = new Deadline(description, by);
+                        tasks.add(deadline);
+                        System.out.println(" Got it. I've added this task:");
+                        System.out.println("   " + deadline);
+                        System.out.println(" Now you have " + tasks.size() + " tasks in the list.");
+                    }
+                }
+                System.out.println(separator);
+            } else if (input.startsWith("event ")) {
+                String rest = input.substring(6).trim();
+                int fromIndex = rest.indexOf("/from ");
+                int toIndex = rest.indexOf("/to ");
+                if (fromIndex == -1 || toIndex == -1 || toIndex <= fromIndex) {
+                    System.out.println(" Invalid event format. Use: event <description> /from <time> /to <time>");
+                } else {
+                    String description = rest.substring(0, fromIndex).trim();
+                    String from = rest.substring(fromIndex + 6, toIndex).trim();
+                    String to = rest.substring(toIndex + 4).trim();
+                    if (description.isEmpty() || from.isEmpty() || to.isEmpty()) {
+                        System.out.println(" The description, from, and to cannot be empty.");
+                    } else {
+                        Event event = new Event(description, from, to);
+                        tasks.add(event);
+                        System.out.println(" Got it. I've added this task:");
+                        System.out.println("   " + event);
+                        System.out.println(" Now you have " + tasks.size() + " tasks in the list.");
+                    }
+                }
+                System.out.println(separator);
             } else {
-                Task newTask = new Task(input);
+                // For backward compatibility, treat as a simple task (Todo)
+                Task newTask = new Todo(input);
                 tasks.add(newTask);
                 System.out.println(" added: " + input);
                 System.out.println(separator);
@@ -67,5 +120,3 @@ public class Mandy {
         scanner.close();
     }
 }
-
-
