@@ -1,14 +1,18 @@
+package mandy;
+
 import java.util.Scanner;
 import java.util.ArrayList;
 
 public class Mandy {
+    private static final String FILE_PATH = "./data/duke.txt";
+    private static Storage storage = new Storage(FILE_PATH);
+
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         String separator = "____________________________________________________________";
-        ArrayList<Task> tasks = new ArrayList<>();
+        ArrayList<Task> tasks = storage.loadTasks();
 
-        System.out.println("Hello! I'm Mandy");
-        System.out.println("What can I do for you?");
+        System.out.println("Hiiii I'm Mandy :D try typing \"?\" for a list of commands!");
         System.out.println(separator);
 
         while (true) {
@@ -22,11 +26,17 @@ public class Mandy {
                 } else if (input.equals("list")) {
                     handleList(tasks);
                     System.out.println(separator);
+                } else if (input.equals("?")) {
+                    handleHelp();
+                    System.out.println(separator);
                 } else if (input.startsWith("mark ")) {
                     handleMark(input, tasks);
                     System.out.println(separator);
                 } else if (input.startsWith("unmark ")) {
                     handleUnmark(input, tasks);
+                    System.out.println(separator);
+                } else if (input.startsWith("delete ")) {
+                    handleDelete(input, tasks);
                     System.out.println(separator);
                 } else if (input.startsWith("todo")) {
                     handleTodo(input, tasks);
@@ -49,6 +59,10 @@ public class Mandy {
         scanner.close();
     }
 
+    private static void saveTasks(ArrayList<Task> tasks) {
+        storage.saveTasks(tasks);
+    }
+
     private static void handleList(ArrayList<Task> tasks) throws MandyException {
         if (tasks.isEmpty()) {
             throw new MandyException("No tasks stored.");
@@ -60,6 +74,19 @@ public class Mandy {
         }
     }
 
+    private static void handleHelp() {
+        System.out.println(" Here are the commands you can use:");
+        System.out.println("   bye - Exit the program");
+        System.out.println("   list - List all tasks");
+        System.out.println("   mark <number> - Mark a task as done");
+        System.out.println("   unmark <number> - Mark a task as not done");
+        System.out.println("   delete <number> - Delete a task");
+        System.out.println("   todo <description> - Add a todo task");
+        System.out.println("   deadline <description> /by <time> - Add a deadline task");
+        System.out.println("   event <description> /from <time> /to <time> - Add an event task");
+        System.out.println("   ? - Show this help message");
+    }
+
     private static void handleMark(String input, ArrayList<Task> tasks) throws MandyException {
         try {
             int index = Integer.parseInt(input.substring(5).trim()) - 1;
@@ -69,6 +96,7 @@ public class Mandy {
             tasks.get(index).markAsDone();
             System.out.println(" Nice! I've marked this task as done:");
             System.out.println("   " + tasks.get(index));
+            saveTasks(tasks);
         } catch (NumberFormatException e) {
             throw new MandyException("Please provide a valid task number.");
         }
@@ -83,6 +111,23 @@ public class Mandy {
             tasks.get(index).markAsNotDone();
             System.out.println(" OK, I've marked this task as not done yet:");
             System.out.println("   " + tasks.get(index));
+            saveTasks(tasks);
+        } catch (NumberFormatException e) {
+            throw new MandyException("Please provide a valid task number.");
+        }
+    }
+
+    private static void handleDelete(String input, ArrayList<Task> tasks) throws MandyException {
+        try {
+            int index = Integer.parseInt(input.substring(7).trim()) - 1;
+            if (index < 0 || index >= tasks.size()) {
+                throw new MandyException("Invalid task number.");
+            }
+            Task removed = tasks.remove(index);
+            System.out.println(" Noted. I've removed this task:");
+            System.out.println("   " + removed);
+            System.out.println(" Now you have " + tasks.size() + " tasks in the list.");
+            saveTasks(tasks);
         } catch (NumberFormatException e) {
             throw new MandyException("Please provide a valid task number.");
         }
@@ -98,6 +143,7 @@ public class Mandy {
         System.out.println(" Got it. I've added this task:");
         System.out.println("   " + todo);
         System.out.println(" Now you have " + tasks.size() + " tasks in the list.");
+        saveTasks(tasks);
     }
 
     private static void handleDeadline(String input, ArrayList<Task> tasks) throws MandyException {
@@ -116,6 +162,7 @@ public class Mandy {
         System.out.println(" Got it. I've added this task:");
         System.out.println("   " + deadline);
         System.out.println(" Now you have " + tasks.size() + " tasks in the list.");
+        saveTasks(tasks);
     }
 
     private static void handleEvent(String input, ArrayList<Task> tasks) throws MandyException {
@@ -136,6 +183,7 @@ public class Mandy {
         System.out.println(" Got it. I've added this task:");
         System.out.println("   " + event);
         System.out.println(" Now you have " + tasks.size() + " tasks in the list.");
+        saveTasks(tasks);
     }
 }
 
