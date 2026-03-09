@@ -9,7 +9,9 @@ import java.time.format.DateTimeParseException;
  * An event has a description, a "from" date/time, and a "to" date/time.
  */
 public class Event extends Task {
+    /** The start date and time of this event. */
     protected LocalDateTime from;
+    /** The end date and time of this event. */
     protected LocalDateTime to;
     private static final DateTimeFormatter DISPLAY_FORMAT = DateTimeFormatter.ofPattern("MMM dd yyyy, HH:mm");
     private static final DateTimeFormatter STORAGE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");

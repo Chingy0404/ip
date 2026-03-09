@@ -5,7 +5,9 @@ package mandy;
  * This is an abstract base class for specific task types (Todo, Deadline, Event).
  */
 public abstract class Task {
+    /** The description of this task. */
     protected String description;
+    /** The completion status of this task. */
     protected boolean isDone;
 
     /**

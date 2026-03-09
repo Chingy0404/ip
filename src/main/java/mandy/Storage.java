@@ -27,6 +27,8 @@ public class Storage {
      * Loads tasks from the file.
      * If the file or directory does not exist, returns an empty list.
      * If the file is corrupted (invalid format), skips the corrupted line.
+     *
+     * @return the list of tasks loaded from the file
      */
     public ArrayList<Task> loadTasks() {
         ArrayList<Task> tasks = new ArrayList<>();
@@ -126,6 +128,8 @@ public class Storage {
     /**
      * Saves the given list of tasks to the file.
      * Creates the directory if it doesn't exist.
+     *
+     * @param tasks the list of tasks to save
      */
     public void saveTasks(ArrayList<Task> tasks) {
         File file = new File(filePath);

@@ -9,6 +9,7 @@ import java.time.format.DateTimeParseException;
  * A deadline has a description and a "by" date/time.
  */
 public class Deadline extends Task {
+    /** The due date and time of this deadline. */
     protected LocalDateTime by;
     private static final DateTimeFormatter DISPLAY_FORMAT = DateTimeFormatter.ofPattern("MMM dd yyyy, HH:mm");
     private static final DateTimeFormatter STORAGE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
