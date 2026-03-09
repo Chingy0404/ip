@@ -7,9 +7,18 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+/**
+ * Handles loading and saving tasks to a file.
+ * This class manages persistence of tasks across sessions.
+ */
 public class Storage {
     private final String filePath;
 
+    /**
+     * Constructs a Storage object with the given file path.
+     *
+     * @param filePath the path to the file where tasks are stored
+     */
     public Storage(String filePath) {
         this.filePath = filePath;
     }
@@ -85,22 +94,30 @@ public class Storage {
                 throw new IllegalArgumentException("Deadline must have exactly 4 fields");
             }
             String by = parts[3].trim();
-            Deadline deadline = new Deadline(description, by);
-            if (isDone == 1) {
-                deadline.markAsDone();
+            try {
+                Deadline deadline = new Deadline(description, by);
+                if (isDone == 1) {
+                    deadline.markAsDone();
+                }
+                return deadline;
+            } catch (java.time.format.DateTimeParseException e) {
+                throw new IllegalArgumentException("Invalid date format in deadline: " + by);
             }
-            return deadline;
         case "E":
             if (parts.length != 5) {
                 throw new IllegalArgumentException("Event must have exactly 5 fields");
             }
             String from = parts[3].trim();
             String to = parts[4].trim();
-            Event event = new Event(description, from, to);
-            if (isDone == 1) {
-                event.markAsDone();
+            try {
+                Event event = new Event(description, from, to);
+                if (isDone == 1) {
+                    event.markAsDone();
+                }
+                return event;
+            } catch (java.time.format.DateTimeParseException e) {
+                throw new IllegalArgumentException("Invalid date format in event: " + from + " or " + to);
             }
-            return event;
         default:
             throw new IllegalArgumentException("Unknown task type: " + type);
         }
